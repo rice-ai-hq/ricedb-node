@@ -1,5 +1,5 @@
 {
-    "name": "ricedb-node-client",
+    "name": "ricedb-node",
     "version": "0.1.0",
     "description": "Node.js client for RiceDB",
     "main": "dist/index.js",
