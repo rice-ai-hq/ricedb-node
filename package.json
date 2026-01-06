@@ -1,0 +1,33 @@
+{
+    "name": "ricedb-node",
+    "version": "0.1.0",
+    "description": "Node.js client for RiceDB",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "prepack": "npm run build",
+        "generate-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/proto --ts_proto_opt=outputServices=grpc-js,esModuleInterop=true,env=node,forceLong=long --proto_path=../proto ../proto/ricedb.proto",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "ricedb",
+        "vector",
+        "database",
+        "grpc"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@grpc/grpc-js": "^1.10.0",
+        "@grpc/proto-loader": "^0.7.10",
+        "axios": "^1.6.0",
+        "long": "^5.2.3"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "ts-node": "^10.9.2",
+        "ts-proto": "^1.166.0",
+        "typescript": "^5.3.0"
+    }
+}
