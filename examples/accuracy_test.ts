@@ -6,32 +6,32 @@ const PASSWORD = process.env.PASSWORD || "admin";
 // const SSL = (process.env.SSL || "false").toLowerCase() === "true"; // Not supporting SSL config in constructor easily yet, assuming insecure for local
 
 function printResult(name: string, passed: boolean, detail: string = "") {
-  const icon = passed ? "✅" : "❌";
+  const icon = passed ? "[PASS]" : "[FAIL]";
   console.log(`   ${icon} ${name}: ${detail}`);
 }
 
 async function main() {
-  console.log("🍚 RiceDB Accuracy Test\n");
+  console.log("RiceDB Accuracy Test\n");
   const client = new RiceDBClient(HOST, "auto", PORT);
 
   console.log("Connecting...");
   try {
     await client.connect();
   } catch (e) {
-    console.log("❌ Connection failed", e);
+    console.log("Connection failed", e);
     return;
   }
 
   try {
     await client.login("admin", PASSWORD);
   } catch (e) {
-    console.log(`❌ Login failed: ${e}`);
+    console.log(`Login failed: ${e}`);
     return;
   }
 
   const baseId = 2000;
 
-  console.log("1️⃣  Ingesting Test Corpus...");
+  console.log("1. Ingesting Test Corpus...");
   const corpus = [
     {
       id: baseId + 1,
@@ -62,7 +62,7 @@ async function main() {
 
   console.log("   ✓ Ingested 5 documents");
 
-  console.log("\n2️⃣  Running Queries...");
+  console.log("\n2. Running Queries...");
 
   // Test 1: Exact keyword match
   let results = await client.search("brown fox", 1, 10);

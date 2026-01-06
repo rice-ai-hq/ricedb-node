@@ -4,37 +4,16 @@ const HOST = process.env.HOST || "localhost";
 const PORT = parseInt(process.env.PORT || "50051");
 const PASSWORD = process.env.PASSWORD || "admin";
 
-// Simulated LLM Generation
-async function generateAnswer(
-  query: string,
-  context: string[]
-): Promise<string> {
-  // In a real RAG system, you would send this to OpenAI/Anthropic/LocalLLM
-  console.log(
-    `\n🤖 LLM Prompt:\nQuestion: ${query}\nContext:\n${context.join("\n")}`
-  );
-
-  // Simple rule-based simulation for the demo
-  if (query.includes("schedule"))
-    return "The project schedule is tight, with Phase 1 due next week.";
-  if (query.includes("budget")) return "The budget allocation is $50k for Q1.";
-  return "I found some relevant information in the documents.";
-}
-
 async function main() {
-  console.log("==================================================");
-  console.log(" RiceDB RAG Pipeline Demo");
-  console.log("==================================================");
-
   const client = new RiceDBClient(HOST, "auto", PORT);
 
   try {
     await client.connect();
     await client.login("admin", PASSWORD);
-    console.log("✅ Connected & Authenticated");
+    console.log("Connected & Authenticated");
 
     // 1. Ingest Knowledge Base
-    console.log("\n1️⃣  Ingesting Knowledge Base...");
+    console.log("\n1. Ingesting Knowledge Base...");
 
     // Use unique IDs to avoid collision with other tests
     const baseId = 5000;
@@ -71,7 +50,7 @@ async function main() {
     }
 
     // 2. RAG Flow
-    console.log("\n2️⃣  Executing RAG Queries...");
+    console.log("\n2. Executing RAG Queries...");
 
     const queries = [
       "What is the schedule for Project Alpha?",
@@ -80,7 +59,7 @@ async function main() {
     ];
 
     for (const query of queries) {
-      console.log(`\n🔎 User Query: "${query}"`);
+      console.log(`\nUser Query: "${query}"`);
 
       // Retrieval
       const k = 2;
@@ -94,12 +73,8 @@ async function main() {
         return `[${title}] ${content}`;
       });
 
-      console.log("   📚 Retrieved Context:");
+      console.log("   Retrieved Context:");
       context.forEach((c) => console.log(`      - ${c}`));
-
-      // Generation
-      const answer = await generateAnswer(query, context);
-      console.log(`\n💡 Generated Answer: "${answer}"`);
     }
   } catch (e) {
     console.error("Error:", e);
