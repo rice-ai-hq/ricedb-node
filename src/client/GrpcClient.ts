@@ -135,7 +135,8 @@ export class GrpcClient extends BaseRiceDBClient {
     query: string,
     userId: Long | number | string,
     k: number = 10,
-    sessionId?: string
+    sessionId?: string,
+    filter?: { [key: string]: any }
   ): Promise<SearchResultItem[]> {
     if (!this.client) throw new Error("Not connected");
     const req = {
@@ -143,6 +144,7 @@ export class GrpcClient extends BaseRiceDBClient {
       userId: this.toLong(userId),
       k,
       sessionId,
+      filter: filter ? JSON.stringify(filter) : "",
     };
     const res: any = await this.promisify(this.client.search, req);
     return res.results.map((r: any) => ({

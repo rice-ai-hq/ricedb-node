@@ -61,23 +61,23 @@ function generateCorpus(count: number): any[] {
 }
 
 async function main() {
-  console.log("RiceDB Bulk Ingest Example (HDC)\n");
+  console.log(" RiceDB Bulk Ingest Example (HDC)\n");
   const client = new RiceDBClient(HOST, "auto", PORT);
 
   try {
-    console.log(`1. Connecting to ${HOST}:${PORT}...`);
+    console.log(`1  Connecting to ${HOST}:${PORT}...`);
     await client.connect();
-    console.log(`   ✓ Connected`);
+    console.log(`    Connected`);
 
-    console.log("   Logging in...");
+    console.log("    Logging in...");
     await client.login("admin", PASSWORD);
-    console.log("   ✓ Logged in successfully");
+    console.log("    Logged in successfully");
 
-    console.log("\n2. Generating Data...");
+    console.log("\n2  Generating Data...");
     const rawDocs = generateCorpus(TOTAL_DOCS);
-    console.log(`   ✓ Generated ${rawDocs.length} documents`);
+    console.log(`    Generated ${rawDocs.length} documents`);
 
-    console.log(`\n3. Starting Bulk Ingest (Batch Size: ${BATCH_SIZE})...`);
+    console.log(`\n3  Starting Bulk Ingest (Batch Size: ${BATCH_SIZE})...`);
     const startTime = Date.now();
     let totalInserted = 0;
 
@@ -95,22 +95,24 @@ async function main() {
         const count = result.count;
         totalInserted += count;
         console.log(
-          `   ✓ Batch ${
+          `    Batch ${
             Math.floor(i / BATCH_SIZE) + 1
           }: Inserted ${count} docs (Total: ${totalInserted})`
         );
       } catch (e) {
-        console.log(`   Batch ${Math.floor(i / BATCH_SIZE) + 1} failed: ${e}`);
+        console.log(
+          `    Batch ${Math.floor(i / BATCH_SIZE) + 1} failed: ${e}`
+        );
       }
     }
 
     const duration = (Date.now() - startTime) / 1000;
-    console.log(`\nIngest Complete!`);
+    console.log(`\n Ingest Complete!`);
     console.log(`   Total Documents: ${totalInserted}`);
     console.log(`   Time Taken: ${duration.toFixed(2)}s`);
     console.log(`   Rate: ${(totalInserted / duration).toFixed(2)} docs/sec`);
 
-    console.log("\n4. Verifying with Search...");
+    console.log("\n4  Verifying with Search...");
     const query = "server outage";
     console.log(`   Query: '${query}'`);
 

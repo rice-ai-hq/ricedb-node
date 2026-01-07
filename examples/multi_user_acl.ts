@@ -13,7 +13,7 @@ async function main() {
   try {
     await adminClient.connect();
     await adminClient.login("admin", PASSWORD);
-    console.log("Logged in as Admin");
+    console.log(" Logged in as Admin");
 
     const usersConfig = {
       alice: { role: "user", dept: "Finance", pass: "alice123" },
@@ -30,7 +30,7 @@ async function main() {
     console.log("==================================================");
 
     for (const [name, info] of Object.entries(usersConfig)) {
-      console.log(`Creating user '${name}'...`);
+      console.log(`  Creating user '${name}'...`);
       try {
         // Cleanup if exists
         try {
@@ -39,14 +39,14 @@ async function main() {
 
         const userId = await adminClient.createUser(name, info.pass, info.role);
         users[name] = { id: userId.toString() };
-        console.log(`Created ${name} (ID: ${userId})`);
+        console.log(` Created ${name} (ID: ${userId})`);
 
         const client = new RiceDBClient(HOST, "auto", PORT);
         await client.connect();
         await client.login(name, info.pass);
         userClients[name] = client;
       } catch (e) {
-        console.error(`Failed to create/login ${name}: ${e}`);
+        console.error(` Failed to create/login ${name}: ${e}`);
       }
     }
 
@@ -74,7 +74,7 @@ async function main() {
       write: false,
       delete: false,
     });
-    console.log("Document inserted and shared with Charlie");
+    console.log(" Document inserted and shared with Charlie");
 
     const bobClient = userClients["bob"];
     console.log("\nBob inserting API Documentation...");
@@ -94,14 +94,14 @@ async function main() {
       write: false,
       delete: false,
     });
-    console.log("Document inserted and shared with Diana");
+    console.log(" Document inserted and shared with Diana");
 
     console.log("\n==================================================");
     console.log(" 3. Testing Permissions");
     console.log("==================================================");
 
     const charlieClient = userClients["charlie"];
-    console.log("Charlie searching for reports...");
+    console.log("  Charlie searching for reports...");
     const resultsCharlie = await charlieClient.search(
       "budget report",
       users["charlie"].id,
@@ -109,12 +109,12 @@ async function main() {
     );
     const foundCharlie = resultsCharlie.some((r) => r.id.toString() === "1001");
     if (foundCharlie) {
-      console.log("Charlie found the Budget Report");
+      console.log(" Charlie found the Budget Report");
     } else {
-      console.log("Charlie could NOT find the Budget Report");
+      console.log(" Charlie could NOT find the Budget Report");
     }
 
-    console.log("Bob searching for reports (Should fail)...");
+    console.log("  Bob searching for reports (Should fail)...");
     const resultsBob = await bobClient.search(
       "budget report",
       users["bob"].id,
@@ -122,16 +122,16 @@ async function main() {
     );
     const foundBob = resultsBob.some((r) => r.id.toString() === "1001");
     if (!foundBob) {
-      console.log("Bob could NOT find the Budget Report (Correct)");
+      console.log(" Bob could NOT find the Budget Report (Correct)");
     } else {
-      console.log("Bob found the Budget Report (Unexpected)");
+      console.log(" Bob found the Budget Report (Unexpected)");
     }
 
     console.log("\n==================================================");
     console.log(" 4. Revoking Permissions");
     console.log("==================================================");
 
-    console.log("Alice revoking Charlie's access...");
+    console.log("  Alice revoking Charlie's access...");
     await aliceClient.revokePermission(1001, users["charlie"].id);
 
     const resultsCharlie2 = await charlieClient.search(
@@ -143,15 +143,15 @@ async function main() {
       (r) => r.id.toString() === "1001"
     );
     if (!foundCharlie2) {
-      console.log("Charlie can no longer see the report");
+      console.log(" Charlie can no longer see the report");
     } else {
-      console.log("Charlie can still see the report");
+      console.log(" Charlie can still see the report");
     }
 
     console.log("\n==================================================");
     console.log(" 5. Summary");
     console.log("==================================================");
-    console.log("Multi-User ACL Demo completed successfully!");
+    console.log(" Multi-User ACL Demo completed successfully!");
   } catch (e) {
     console.error("Error:", e);
   } finally {

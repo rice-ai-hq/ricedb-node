@@ -119,10 +119,11 @@ export class RiceDBClient extends BaseRiceDBClient {
     query: string,
     userId: Long | number | string,
     k: number = 10,
-    sessionId?: string
+    sessionId?: string,
+    filter?: { [key: string]: any }
   ): Promise<SearchResultItem[]> {
     this.checkConnected();
-    return this.client!.search(query, userId, k, sessionId);
+    return this.client!.search(query, userId, k, sessionId, filter);
   }
 
   async delete(

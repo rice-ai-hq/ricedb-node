@@ -13,24 +13,24 @@ async function main() {
 
   try {
     await client.connect();
-    console.log("Connected");
+    console.log(" Connected");
     await client.login("admin", PASSWORD);
-    console.log("Authenticated as 'admin'");
+    console.log(" Authenticated as 'admin'");
 
     const sessionId = "code-review-101";
 
     console.log("\n==================================================");
     console.log(" 1. Initialization");
     console.log("==================================================");
-    console.log(`Clearing memory for session: ${sessionId}`);
+    console.log(`  Clearing memory for session: ${sessionId}`);
     await client.clearMemory(sessionId);
-    console.log("Memory cleared");
+    console.log(" Memory cleared");
 
     console.log("\n==================================================");
     console.log(" 2. Multi-Agent Interaction");
     console.log("==================================================");
 
-    console.log("ScannerAgent is analyzing the codebase...");
+    console.log("  ScannerAgent is analyzing the codebase...");
     await client.addMemory(
       sessionId,
       "ScannerAgent",
@@ -46,10 +46,10 @@ async function main() {
       "Found potential hardcoded secret in login function.",
       { priority: "high", line: "42" }
     );
-    console.log("ScannerAgent logged findings.");
+    console.log(" ScannerAgent logged findings.");
 
     console.log(
-      "ReviewerAgent is filtering memory for 'high' priority findings..."
+      "  ReviewerAgent is filtering memory for 'high' priority findings..."
     );
 
     const highPriorityFindings = await client.getMemory(sessionId, 50, 0, {
@@ -71,7 +71,7 @@ async function main() {
         { verdict: "confirmed", refers_to: lastEntry.id },
         3600
       );
-      console.log("ReviewerAgent added confirmation with 1h TTL.");
+      console.log(" ReviewerAgent added confirmation with 1h TTL.");
     }
 
     console.log("\n==================================================");
@@ -94,9 +94,9 @@ async function main() {
       );
       await client.insert(102, "login.ts user login page", { type: "file" }, 1);
 
-      console.log("Linking auth.ts -> IMPORTS -> login.ts");
+      console.log("  Linking auth.ts -> IMPORTS -> login.ts");
       await client.addEdge(102, 101, "IMPORTS");
-      console.log("Link created.");
+      console.log(" Link created.");
 
       const neighbors = await client.getNeighbors(102, "IMPORTS");
       // neighbors is Long[]

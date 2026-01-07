@@ -125,7 +125,11 @@ export interface SearchRequest {
   queryText: string;
   userId: Long;
   k: number;
-  sessionId?: string | undefined;
+  sessionId?:
+    | string
+    | undefined;
+  /** JSON-encoded metadata filter */
+  filter: string;
 }
 
 export interface SearchResponse {
@@ -1583,7 +1587,7 @@ export const DeleteNodeResponse = {
 };
 
 function createBaseSearchRequest(): SearchRequest {
-  return { queryText: "", userId: Long.UZERO, k: 0, sessionId: undefined };
+  return { queryText: "", userId: Long.UZERO, k: 0, sessionId: undefined, filter: "" };
 }
 
 export const SearchRequest = {
@@ -1599,6 +1603,9 @@ export const SearchRequest = {
     }
     if (message.sessionId !== undefined) {
       writer.uint32(34).string(message.sessionId);
+    }
+    if (message.filter !== "") {
+      writer.uint32(42).string(message.filter);
     }
     return writer;
   },
@@ -1638,6 +1645,13 @@ export const SearchRequest = {
 
           message.sessionId = reader.string();
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.filter = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1653,6 +1667,7 @@ export const SearchRequest = {
       userId: isSet(object.userId) ? Long.fromValue(object.userId) : Long.UZERO,
       k: isSet(object.k) ? globalThis.Number(object.k) : 0,
       sessionId: isSet(object.sessionId) ? globalThis.String(object.sessionId) : undefined,
+      filter: isSet(object.filter) ? globalThis.String(object.filter) : "",
     };
   },
 
@@ -1670,6 +1685,9 @@ export const SearchRequest = {
     if (message.sessionId !== undefined) {
       obj.sessionId = message.sessionId;
     }
+    if (message.filter !== "") {
+      obj.filter = message.filter;
+    }
     return obj;
   },
 
@@ -1684,6 +1702,7 @@ export const SearchRequest = {
       : Long.UZERO;
     message.k = object.k ?? 0;
     message.sessionId = object.sessionId ?? undefined;
+    message.filter = object.filter ?? "";
     return message;
   },
 };

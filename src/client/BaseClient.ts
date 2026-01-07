@@ -66,7 +66,8 @@ export abstract class BaseRiceDBClient {
     query: string,
     userId: Long | number | string,
     k?: number,
-    sessionId?: string
+    sessionId?: string,
+    filter?: { [key: string]: any }
   ): Promise<SearchResultItem[]>;
 
   abstract delete(

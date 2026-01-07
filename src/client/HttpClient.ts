@@ -137,7 +137,8 @@ export class HttpClient extends BaseRiceDBClient {
     query: string,
     userId: Long | number | string,
     k: number = 10,
-    sessionId?: string
+    sessionId?: string,
+    filter?: { [key: string]: any }
   ): Promise<SearchResultItem[]> {
     const payload: any = {
       query,
@@ -145,9 +146,12 @@ export class HttpClient extends BaseRiceDBClient {
       k,
     };
     if (sessionId) payload.session_id = sessionId;
+    if (filter) payload.filter = filter;
 
     const res = await this.request<any>("POST", "/search", payload);
-    return res.results.map((r: any) => ({
+    const results = Array.isArray(res) ? res : res.results || [];
+
+    return results.map((r: any) => ({
       id: Long.fromValue(r.id),
       similarity: r.similarity,
       metadata: r.metadata,

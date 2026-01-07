@@ -7,13 +7,13 @@ const PORT = parseInt(process.env.PORT || "50051");
 const PASSWORD = process.env.PASSWORD || "admin";
 
 async function main() {
-  console.log("RiceDB LongMemEval Test\n");
+  console.log(" RiceDB LongMemEval Test\n");
 
   const client = new RiceDBClient(HOST, "auto", PORT);
   try {
     await client.connect();
     await client.login("admin", PASSWORD);
-    console.log("Connected & Authenticated");
+    console.log(" Connected & Authenticated");
 
     const limit = 5;
     let count = 0;
@@ -25,7 +25,7 @@ async function main() {
     );
 
     if (!fs.existsSync(datasetPath)) {
-      console.error(`Dataset file not found: ${datasetPath}`);
+      console.error(` Dataset file not found: ${datasetPath}`);
       console.error("   Current dir:", __dirname);
       return;
     }
@@ -42,7 +42,7 @@ async function main() {
       const qId = item.question_id;
       const userId = 10000 + count;
 
-      console.log(`\nTest Case ${count} (ID: ${qId})`);
+      console.log(`\n Test Case ${count} (ID: ${qId})`);
       console.log(`   Question: ${question}`);
       console.log(`   Expected Answer: ${answer}`);
 
@@ -84,9 +84,11 @@ async function main() {
         }
       }
 
-      console.log(`   Expected Answer Doc IDs: ${expectedDocIds.join(", ")}`);
       console.log(
-        `   Ingesting ${docs.length} documents for user ${userId}...`
+        `    Expected Answer Doc IDs: ${expectedDocIds.join(", ")}`
+      );
+      console.log(
+        `    Ingesting ${docs.length} documents for user ${userId}...`
       );
 
       const startTime = Date.now();
@@ -100,26 +102,26 @@ async function main() {
           await client.batchInsert(chunk, userId);
           totalIngested += chunk.length;
         } catch (e) {
-          console.log(`   Batch failed: ${e}`);
+          console.log(`    Batch failed: ${e}`);
         }
       }
 
       const ingestTime = (Date.now() - startTime) / 1000;
       const rate = ingestTime > 0 ? totalIngested / ingestTime : 0;
       console.log(
-        `   ✓ Ingested ${totalIngested} docs in ${ingestTime.toFixed(
+        `    Ingested ${totalIngested} docs in ${ingestTime.toFixed(
           2
         )}s (${rate.toFixed(1)} docs/sec)`
       );
 
       // Search
-      console.log("   Searching...");
+      console.log("    Searching...");
       const searchStart = Date.now();
       const results = await client.search(question, userId, 3);
       const searchTime = (Date.now() - searchStart) / 1000;
 
       console.log(
-        `   ✓ Found ${results.length} results in ${searchTime.toFixed(4)}s`
+        `    Found ${results.length} results in ${searchTime.toFixed(4)}s`
       );
 
       results.forEach((res, i) => {
@@ -131,7 +133,7 @@ async function main() {
         const nodeId = res.id.toNumber();
 
         const isExpected = expectedDocIds.includes(nodeId);
-        const marker = isExpected ? "[OK]" : "    ";
+        const marker = isExpected ? "" : "  ";
 
         console.log(
           `     ${
@@ -142,7 +144,7 @@ async function main() {
         );
 
         if (answer && text.toLowerCase().includes(answer.toLowerCase())) {
-          console.log(`        Text contains answer string!`);
+          console.log(`         Text contains answer string!`);
         }
       });
     }
